@@ -1,7 +1,5 @@
 <?php
 
-	
-
 	const BASE_API = 'http://192.168.8.101:4500/';
 
 
@@ -15,12 +13,12 @@
 	}elseif($_POST['type'] == 'update' ){
 
 		update( $_POST['source'] , $_POST['type'] , $_POST['id'] );
-		header("Location: " . 'http://localhost/ETMSFrontEnd/' .$_POST['source']. '/all.php'); 
-		exit();
+		// header("Location: " . 'http://localhost/ETMSFrontEnd/' .$_POST['source']. '/all.php'); 
+		// exit();
 
 	}elseif($_POST['type'] == 'delete'){
 
-		delete( $_POST['source'] , $_POST['type'] , $_POST['empID'] );
+		delete( $_POST['source'] , $_POST['type'] , $_POST['id'] );
 		header("Location: " . 'http://localhost/ETMSFrontEnd/' .$_POST['source']. '/all.php'); 
 		exit();
 	}
@@ -49,16 +47,22 @@
 		$post_data = $_POST ;
 		$post_data_json = json_encode($post_data);
 
-		post_curl($url, $post_data_json);
+		post_curl_2($url, $post_data_json);
+
+		print_r( $url);
 
 	}
 
-	function delete($source, $type, $empID){
+	function delete($source, $type, $id){
 
 		$source = $source;
 		$type = $type;
-		$empID = $empID;
-		$url = BASE_API . $source . '/' . $type . '/' . $empID;
+		$id = $id;
+		$url = BASE_API . $source . '/' . $type . '/' . $id;
+
+		echo "delete ";
+
+	print_r($url);
 		$post_data = $_POST ;
 		$post_data_json = json_encode($post_data);
 
@@ -84,6 +88,26 @@
 		$result = curl_exec($ch);
 		curl_close($ch);
 	}
+
+	function post_curl_2($url, $post_data_json){
+		$ch = curl_init();
+
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_HEADER, TRUE);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data_json);
+
+		//So that curl_exec returns the contents of the cURL; rather than echoing it
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
+
+		//execute post
+		$result = curl_exec($ch);
+		curl_close($ch);
+	}
+
 
 	function delete_curl( $url, $post_data_json){
 		$ch = curl_init();

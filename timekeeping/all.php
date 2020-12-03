@@ -43,17 +43,15 @@
                     </div>
 
                     <div class="page-header clearfix">
-                        <h2 class="pull-left">Store Details</h2>
-                        <a href="create.php" class="btn btn-success pull-right">Add New Store</a>
+                        <h2 class="pull-left">Time Tracing Details</h2>
+                        <a href="create.php" class="btn btn-success pull-right">Log New Time</a>
                     </div>
 
                     
 
                     <?php
-
-                        const BASE_API = 'http://192.168.8.101:4500/store/';
-                        
-                        $item_json = file_get_contents( BASE_API . 'getAll');
+                         
+                        $item_json = file_get_contents('http://192.168.8.101:4500/Timekeeping/all');
                         $item_array = json_decode($item_json, true);
                     
                         // echo "<pre>";
@@ -62,9 +60,11 @@
                         echo "<table class='table table-bordered table-striped'>";
                             echo "<thead>";
                                 echo "<tr>";
-                                    echo "<th>storeID</th>";
-                                    echo "<th>storeName</th>";
-                                    echo "<th>Action</th>";
+                                    echo "<th>Time ID</th>";
+                                    echo "<th>Time In</th>";
+                                    echo "<th>Time Out</th>";
+                                    echo "<th>Employee Name</th>";
+                                    echo "<th>Actions</th>";
                                 echo "</tr>";
                             echo "</thead>";
                             echo "<tbody>";
@@ -73,15 +73,21 @@
                             foreach ($item_array as $emp_key => $emp_val) {
                                 
                                 echo "<tr>";
-                                    echo "<td>" . $item_array[$i]['storeID'] . "</td>";
-                                    echo "<td>" . $item_array[$i]['storeName'] . "</td>";
+                                    echo "<td>" . $item_array[$i]['recID'] . "</td>";
+                                    echo "<td>" . $item_array[$i]['time_In'] . "</td>";
+                                    echo "<td>" . $item_array[$i]['time_Out'] . "</td>";
+
+                                    $emp_json = file_get_contents('http://192.168.8.101:4500/employee/read/'. $item_array[$i]['empID']);
+                                    $emp_array = json_decode($emp_json, true);
+
+
+                                    echo "<td>" . $emp_array['empName'] . ' ' . $emp_array['empLastName'] . "</td>";
                                     echo "<td>";
-                                        echo "<a href='read.php?id=".  $item_array[$i]['storeID'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a>";
-                                        echo "<a href='update.php?id=". $item_array[$i]['storeID'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>";
-										 echo "<a href='delete.php?id=".  $item_array[$i]['storeID'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a>";
+                                        echo "<a href='read.php?id=".  $item_array[$i]['recID'] ."' title='View Record' data-toggle='tooltip'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                                        echo "<a href='update.php?id=". $item_array[$i]['recID'] ."' title='Update Record' data-toggle='tooltip'><span class='glyphicon glyphicon-pencil'></span></a>";
+                                        echo "<a href='delete.php?id=".  $item_array[$i]['recID'] ."' title='Delete Record' data-toggle='tooltip'><span class='glyphicon glyphicon-trash'></span></a>";
                                     echo "</td>"; 
                                 echo "</tr>";
-                                
 
                                 $i++;
                             }
